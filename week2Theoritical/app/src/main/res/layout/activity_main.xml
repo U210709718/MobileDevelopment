@@ -44,23 +44,23 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="Send"
-            android:textSize="15sp"
-            app:iconPadding="8dp"
-            app:iconSize="10dp" />
-
-        <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
             android:text="Unsend"
+            android:textSize="15sp"
+            app:iconPadding="8dp"
+            app:iconSize="10dp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Send"
             android:textSize="15sp"
             app:iconPadding="8dp"
             app:iconSize="10dp" />
