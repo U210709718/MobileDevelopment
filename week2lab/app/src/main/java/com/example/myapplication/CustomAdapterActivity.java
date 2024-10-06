@@ -22,7 +22,7 @@ public class CustomAdapterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_custom_adapter);
 
         final List<Animal> animals = new ArrayList<Animal>();
-        animals.add(new Animal("Dog", R.mipmap.ic_launcher));
+        animals.add(new Animal("Dog", R.mipmap.ic_launcher2));
         animals.add(new Animal("Butterfly", R.mipmap.ic_launcher));
 
         final ListView listView = findViewById(R.id.listView);
