@@ -1,5 +1,6 @@
 package com.example.week3lab;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     List<Post> postList = new ArrayList<>();
     Button btnPost;
     static final int POST_REQUEST = 1;
+
+
 
 
     @Override
@@ -42,5 +46,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == POST_REQUEST && resultCode == Activity.RESULT_OK){
+            Post post = new Post();
+            post.setImage(data.getParcelableExtra("bitmap"));
+            post.setMessage(data.getCharSequenceExtra("msg").toString());
+            postList.add(post);
+            ((PostAdapter)listview.getAdapter()).notifyDataSetChanged();
+
+        }
     }
 }
