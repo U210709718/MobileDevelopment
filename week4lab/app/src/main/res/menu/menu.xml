@@ -7,8 +7,6 @@
         android:visible="true"
         android:icon ="@drawable/ic_backword"
         app:showAsAction="always"
-
-
         />
 
     <item android:title="Forward"
