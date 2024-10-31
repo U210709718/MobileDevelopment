@@ -1,6 +1,7 @@
 package com.example.week5lab;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -8,6 +9,7 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        table = findViewById(R.id.board);
+
+
+        table = findViewById(R.id.board); //shorthand! instade of 9 onclick!!
         for(int i =0 ; i<3 ; i++){
             TableRow row = (TableRow) table.getChildAt(i);
             for(int j=0 ; j<3 ; j++){
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v){
-            if(isValidMove(row,col)){
+            if(!isValidMove(row,col)){
                 Toast.makeText(MainActivity.this, "cell is already occupaid", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -63,11 +66,85 @@ public class MainActivity extends AppCompatActivity {
                 board[row][col] =2;
             }
 
+            if(gameEnded(row, col)== -1){ //game will continue!
+                player1Turn =! player1Turn;
+
+            } else if (gameEnded(row,col) ==0) { //its draw
+                Toast.makeText(MainActivity.this, "its Draw", Toast.LENGTH_LONG).show();
+
+            }
+            else if(gameEnded(row,col)==1){
+                Toast.makeText(MainActivity.this, "Player 1 wins", Toast.LENGTH_LONG).show();
+
+            }
+            else{
+                Toast.makeText(MainActivity.this, "Player 2 wins", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+        public int gameEnded(int row, int col){
+            int symbol= board[row][col];
+            boolean win=true;
+
+            for(int i=0 ; i<3 ;i++){
+                if(board[i][col] != symbol){
+                    win =false;
+                    break;
+                }
+            }
+            if(win){ //if not valid!
+                    return symbol;
+            }
+                //for rows
+
+                //check diagonals
+            return -1; //this refer to game will continue
 
         }
 
         public boolean isValidMove(int row, int col){
             return board [row][col] ==0; //cell is empty
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("player1Turn",player1Turn); //key and value!
+        byte [] boardSingle = new byte[9];
+        for(int i=0 ; i<3 ;i++){
+            for(int j=0 ; j<3 ;j++){
+                boardSingle[3*i + j] = board[i][j]; //converted into one dimentional array!
+            }
+        }
+        outState.putByteArray("board",boardSingle);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        player1Turn = savedInstanceState.getBoolean("player1Turn");
+        byte [] boardSingle = savedInstanceState.getByteArray("board");
+        for(int i=0; i<9 ;i++){
+            board[i/3] [i%3] = boardSingle[i]; //converted into 1 dim
+        }
+        //set symbols on board!
+
+        TableLayout tableLayout = findViewById(R.id.board);
+        for (int i = 0; i < 3; i++) {
+            TableRow row =  (TableRow) table.getChildAt(i);
+            for(int j=0 ; j<3 ;j++) {//to access buttons
+                Button button = (Button) row.getChildAt(j);
+                if(board[i][j] ==1){
+                    button.setText("X");
+                }
+                else if (board[i][j] ==2) {
+                    button.setText("O");
+                }
+
+            }
+
         }
     }
 }
