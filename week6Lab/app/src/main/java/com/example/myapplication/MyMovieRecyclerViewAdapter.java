@@ -6,36 +6,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.graphics.Color;
 
-import com.example.myapplication.placeholder.PlaceholderContent.PlaceholderItem;
-import com.example.myapplication.databinding.FragmentMovieBinding;
+
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
- */
-public class MymovieRecyclerViewAdapter extends RecyclerView.Adapter<MymovieRecyclerViewAdapter.ViewHolder> {
+public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<Movie> mValues;
+    private final MovieFragment.OnMovieSelected mlistener;
+    private int selectedIndex;
 
-    public MymovieRecyclerViewAdapter(List<PlaceholderItem> items) {
+    public MyMovieRecyclerViewAdapter(List<Movie> items, MovieFragment.OnMovieSelected listener) {
         mValues = items;
+        mlistener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        return new ViewHolder(FragmentMovieBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movie,parent,false);
+        return new ViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(Integer.toString(position));
+        holder.mContentView.setText(mValues.get(position).getName());
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mlistener != null){
+                    mlistener.movieSelected(holder.mItem);
+                    notifyItemChanged(selectedIndex);
+                    selectedIndex = holder.getLayoutPosition();
+                    notifyItemChanged(selectedIndex);
+                }
+
+            }
+        });
+        holder.itemView.setBackgroundColor(selectedIndex == position ? Color.GREEN:Color.TRANSPARENT);
     }
 
     @Override
@@ -44,14 +57,16 @@ public class MymovieRecyclerViewAdapter extends RecyclerView.Adapter<MymovieRecy
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public Movie mItem;
 
-        public ViewHolder(FragmentMovieBinding binding) {
-            super(binding.getRoot());
-            mIdView = binding.itemNumber;
-            mContentView = binding.content;
+        public ViewHolder(View view) {
+            super(view);
+            mView= view;
+            mIdView = view.findViewById(R.id.item_number);
+            mContentView = view.findViewById(R.id.content);
         }
 
         @Override

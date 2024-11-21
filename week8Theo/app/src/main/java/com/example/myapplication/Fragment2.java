@@ -1,12 +1,18 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.location.GnssAntennaInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +29,7 @@ public class Fragment2 extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    //listener
 
     public Fragment2() {
         // Required empty public constructor
@@ -60,5 +67,42 @@ public class Fragment2 extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_2, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Button btnSelect = view.findViewById(R.id.btnSelect);
+        EditText txtStudent = view.findViewById(R.id.txtStudent);
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null){
+                    listener.onStudentChanged(txtStudent.getText().toString());
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof StudentListener){
+            this.listener = (StudentListener) context;
+        }else{
+            throw new RuntimeException(context.toString() + "must implement StudentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.listener = null;
+    }
+
+    public interface StudentListener{ //main act will implement
+        void onStudentChanged(String name);
+
     }
 }
