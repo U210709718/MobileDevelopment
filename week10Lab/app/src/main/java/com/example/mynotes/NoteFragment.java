@@ -3,6 +3,7 @@ package com.example.mynotes;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,29 +15,26 @@ import android.view.ViewGroup;
 
 import com.example.mynotes.placeholder.PlaceholderContent;
 
+import java.util.ArrayList;
+
 /**
  * A fragment representing a list of Items.
  */
 public class NoteFragment extends Fragment {
+    private OnNoteListIntereactionListener listener;
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private ArrayList <Note> notes;
+    private static final String ARG_NOTES = "notes";
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public NoteFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static NoteFragment newInstance(int columnCount) {
+    public static NoteFragment newInstance(ArrayList<Note> notes) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable(ARG_NOTES, notes);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +44,7 @@ public class NoteFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            notes = (ArrayList<Note>) getArguments().getSerializable(ARG_NOTES);
         }
     }
 
@@ -59,13 +57,31 @@ public class NoteFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyNoteRecyclerViewAdapter(PlaceholderContent.ITEMS));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new MyNoteRecyclerViewAdapter(notes  , listener));
         }
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof OnNoteListIntereactionListener){
+            listener = (OnNoteListIntereactionListener) context;
+        }else{
+            throw new RuntimeException(context.getClass().getName() + " Should implement OnNoteListIntereactionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    public interface OnNoteListIntereactionListener {
+        void onNoteSelected(Note note);
+
+
     }
 }

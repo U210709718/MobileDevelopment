@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.mynotes.placeholder.PlaceholderContent.PlaceholderItem;
 import com.example.mynotes.databinding.FragmentNoteBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ import java.util.List;
  */
 public class MyNoteRecyclerViewAdapter extends RecyclerView.Adapter<MyNoteRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<Note> mValues;
 
-    public MyNoteRecyclerViewAdapter(List<PlaceholderItem> items) {
-        mValues = items;
+    public MyNoteRecyclerViewAdapter(ArrayList<Note> notes , NoteFragment.OnNoteListIntereactionListener) {
+        mValues = notes;
     }
 
     @Override
