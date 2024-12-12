@@ -13,31 +13,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mynotes.placeholder.PlaceholderContent;
-
 import java.util.ArrayList;
+
 
 /**
  * A fragment representing a list of Items.
  */
 public class NoteFragment extends Fragment {
-    private OnNoteListIntereactionListener listener;
 
-    private ArrayList <Note> notes;
     private static final String ARG_NOTES = "notes";
 
-    public NoteFragment() {
+    private OnNoteListInteractionListener listener; // Corrected here
+
+    private ArrayList <Note> notes;
+
+
+    public NoteFragment() {}
+
+    public static NoteFragment newInstance(ArrayList<Note> notes) {
+            NoteFragment fragment = new NoteFragment();
+            Bundle args = new Bundle();
+            args.putSerializable(ARG_NOTES, notes);
+            fragment.setArguments(args);
+            return fragment;
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static NoteFragment newInstance(ArrayList<Note> notes) {
-        NoteFragment fragment = new NoteFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_NOTES, notes);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class NoteFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyNoteRecyclerViewAdapter(notes  , listener));
+            recyclerView.setAdapter(new MyNoteRecyclerViewAdapter(notes, listener)); // Corrected here
         }
         return view;
     }
@@ -66,10 +66,10 @@ public class NoteFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnNoteListIntereactionListener){
-            listener = (OnNoteListIntereactionListener) context;
-        }else{
-            throw new RuntimeException(context.getClass().getName() + " Should implement OnNoteListIntereactionListener");
+        if (context instanceof OnNoteListInteractionListener) { // Corrected here
+            listener = (OnNoteListInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.getClass().getName() + " must implement OnNoteListInteractionListener");
         }
     }
 
@@ -79,9 +79,7 @@ public class NoteFragment extends Fragment {
         listener = null;
     }
 
-    public interface OnNoteListIntereactionListener {
+    public interface OnNoteListInteractionListener {
         void onNoteSelected(Note note);
-
-
     }
 }
